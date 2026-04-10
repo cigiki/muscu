@@ -10,6 +10,10 @@ class PlanningController extends BaseController
     public function index()
     {
         helper(['url', 'form']);
+        
+        $session = session();
+        
+        
         $uid=$this->request->getVar('user_id');
         $data=array();
         
@@ -33,10 +37,14 @@ class PlanningController extends BaseController
 
     public function sauvegarder()
     {
+        $session = session();
+
+        // Vérifier si l'utilisateur est connecté
+        if (!$session->get('isLoggedIn')) {
+            return redirect()->to('/connexion');
+        }
+        
         $user_id = $this->request->getPost('user_id');
-
-        $session=session();
-
 
         //je regarde si un planning existe
         $planning=Planning::where('utilisateur_id',$user_id)->first();

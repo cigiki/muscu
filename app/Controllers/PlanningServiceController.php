@@ -5,9 +5,43 @@ namespace App\Controllers;
 use App\Models\Planning;       // Modèle Planning pour accéder aux plannings des utilisateurs
 use App\Models\Planification;  // Modèle Planification pour accéder aux exercices planifiés
 use App\Models\Exercice;       // Modèle Exercice pour récupérer les informations des exercices
+use Firebase\JWT\JWT;          // Ajout pour JWT
 
 class PlanningServiceController extends BaseController
 {
+    // Méthode pour générer un token JWT
+    public function getToken()
+    {
+        // Récupère l'ID de l'utilisateur depuis l'URL
+        $user_id = $this->request->getGet('user_id');
+        
+        // Vérifie que user_id est fourni
+        if (!$user_id) {
+            return $this->response->setJSON(['error' => 'user_id est requis'])->setStatusCode(400);
+        }
+        
+        // Récupère la clé secrète depuis le fichier .env
+        $key = getenv('JWT_SECRET');
+        
+        // Prépare les données à mettre dans le token
+        $payload = [
+            'user_id' => (int)$user_id,
+            'iat' => time(),           // Date de création
+            'exp' => time() + 3600     // Expire dans 1 heure
+        ];
+        
+        // Génère le token
+        $token = JWT::encode($payload, $key, 'HS256');
+        
+        // Retourne le token
+        return $this->response->setJSON([
+            'success' => true,
+            'token' => $token,
+            'user_id' => $user_id,
+            'expire_dans' => '1 heure'
+        ]);
+    }
+
     // Fonction pour récupérer tous les exercices de la semaine pour un utilisateur
     public function getPlanningSemaine()
     {
@@ -43,12 +77,11 @@ class PlanningServiceController extends BaseController
             }
         }
 
-        // Retourne le résultat en JSON, comme dans le style du prof
+        // Retourne le résultat en JSON
         return $this->response->setJSON([
-            'success' => true,           // Indique que l'opération a réussi
-            'user_id' => $user_id,       // ID de l'utilisateur concerné
-            'planning' => $exercices     // Tableau contenant tous les exercices planifiés
+            'success' => true,
+            'user_id' => $user_id,
+            'planning' => $exercices
         ]);
     }
 }
-//http://localhost/~resul.karatas/muscu/public/index.php/service/planning-semaine?user_id=2

@@ -12,10 +12,7 @@ class ProfileController extends BaseController
 
         $session = session();
 
-        // Vérifier si l'utilisateur est connecté
-        if (!$session->get('isLoggedIn')) {
-            return redirect()->to('/connexion');
-        }
+
 
         // Récupérer tous les utilisateurs
         $personnes = new Personne();

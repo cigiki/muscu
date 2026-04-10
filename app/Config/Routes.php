@@ -19,14 +19,20 @@ $routes->post('inscription/traiteInscription', 'InscriptionController::traiteIns
 $routes->get('connexion', 'ConnexionController::index');
 $routes->post('connexion/traiteConnexion', 'ConnexionController::traiteConnexion');
 
-$routes->get('profileuti', 'ProfileController::index');
+$routes->get('profileuti', 'ProfileController::index',['filter' => 'AuthGuard']);
 
 
-$routes->get('planning', 'PlanningController::index');
-$routes->post('planning/sauvegarder', 'PlanningController::sauvegarder');
+$routes->get('planning', 'PlanningController::index',['filter' => 'AuthGuard']);
+$routes->post('planning/sauvegarder', 'PlanningController::sauvegarder',['filter' => 'AuthGuard']);
 
-$routes->get('service/add-exercice', 'PlanningServiceController::addExercice');
+$routes->get('service/add-exercice', 'PlanningServiceController::addExercice',['filter' => 'AuthGuard']);
 
 
-$routes->get('service/planning-semaine', 'PlanningServiceController::getPlanningSemaine');
+// Route pour obtenir le token (NON protégée)
+$routes->get('get-token', 'PlanningServiceController::getToken');
 
+// Route protégée par JWT
+$routes->get('service/planning-semaine', 'PlanningServiceController::getPlanningSemaine', ['filter' => 'JWTAuthGuard']);
+
+$routes->post('webservice/login', 'ApiConnexionController::login');
+$routes->post('webservice/register', 'ApiInscriptionController::register');
