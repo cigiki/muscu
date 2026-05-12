@@ -28,10 +28,10 @@ class ApiInscriptionController extends BaseController
             ]);
             return;
         }
-
+        
         // Hash du mot de passe
         $hashedPassword = password_hash($mdp, PASSWORD_BCRYPT);
-
+        
         // Création utilisateur
         $user = new Personne();
         $user->nom = $nom;
@@ -40,7 +40,7 @@ class ApiInscriptionController extends BaseController
         $user->type = 'utilisateur';
         $user->mdp = $hashedPassword;
         $user->save();
-
+        
         // Génération du JWT (comme login)
         $secretKey = "ma_super_cle_secrete_pour_mon_application_muscu_2025";
 
