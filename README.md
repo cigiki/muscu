@@ -114,3 +114,5 @@ Mon API ne possède pas de méthode getToken() dédiée pour les raisons suivant
     Le token est délivré au bon moment : juste après que l'utilisateur s'est identifié
 
 Conclusion : Je n'ai pas besoin de méthode getToken() car la génération du token JWT est déjà intégrée dans register() et login().
+
+la méthode verifierMotDePasse($mdp) qui va vérifier les différente condition à respecter lors de la création du mots de passe, certain carractère, longuer du mots de pase, ect etc entre autre une vérificaitondumots de passe
