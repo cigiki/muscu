@@ -95,6 +95,21 @@
             color: #ff4d4d;
             font-size: 14px;
             margin-bottom: 15px;
+            background: rgba(255, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #ff2e2e;
+        }
+
+        /* ⭐ NOUVEAU : Style pour l'erreur du mot de passe */
+        .password-error {
+            color: #ffa500;
+            font-size: 14px;
+            margin-bottom: 15px;
+            background: rgba(255, 165, 0, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #ffa500;
         }
     </style>
 </head>
@@ -104,6 +119,14 @@
 
     <h2>Créer un compte</h2>
 
+    <!-- ⭐ NOUVEAU : Affichage de l'erreur de mot de passe (règles de sécurité) -->
+    <?php if(isset($erreurMdp)): ?>
+        <div class="password-error">
+            ⚠️ <?= esc($erreurMdp) ?>
+        </div>
+    <?php endif; ?>
+
+    <!-- Affichage des erreurs de validation (identifiant déjà utilisé, etc.) -->
     <?php if(isset($validation)): ?>
         <div class="error">
             <?= $validation->listErrors() ?>
@@ -113,16 +136,19 @@
     <form action="<?= site_url('inscription/traiteInscription') ?>" method="post">
 
         <label>Nom</label>
-        <input type="text" name="nom" required>
+        <input type="text" name="nom" required value="<?= old('nom') ?>">
 
         <label>Prénom</label>
-        <input type="text" name="prenom" required>
+        <input type="text" name="prenom" required value="<?= old('prenom') ?>">
 
         <label>Identifiant</label>
-        <input type="text" name="identifiant" required>
+        <input type="text" name="identifiant" required value="<?= old('identifiant') ?>">
 
         <label>Mot de passe</label>
         <input type="password" name="mdp" required>
+        <small style="color: #888; font-size: 11px; display: block; margin-top: -12px; margin-bottom: 10px;">
+            (8 caractères min, 1 chiffre, 1 majuscule, 1 caractère spécial)
+        </small>
 
         <label>Code coach</label>
         <input type="password" name="code_coach">

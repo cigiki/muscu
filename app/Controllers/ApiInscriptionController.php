@@ -19,7 +19,7 @@ class ApiInscriptionController extends BaseController
         header('Content-Type: application/json');
 
         // -------------------------------------------------------------
-        // ⭐ NOUVEAU : Vérifier la qualité du mot de passe
+        // ⭐ NOUVEAU : Vérification de la qualité du mot de passe
         // -------------------------------------------------------------
         $erreurMdp = $this->verifierMotDePasse($mdp);
         
