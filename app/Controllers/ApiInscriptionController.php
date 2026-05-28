@@ -18,6 +18,19 @@ class ApiInscriptionController extends BaseController
 
         header('Content-Type: application/json');
 
+        // -------------------------------------------------------------
+        // ⭐ NOUVEAU : Vérifier la qualité du mot de passe
+        // -------------------------------------------------------------
+        $erreurMdp = $this->verifierMotDePasse($mdp);
+        
+        if ($erreurMdp !== null) {
+            http_response_code(400);
+            echo json_encode([
+                'error' => $erreurMdp
+            ]);
+            return;
+        }
+
         // Vérifier si utilisateur existe déjà
         $existingUser = Personne::where('identifiant', $identifiant)->first();
 
@@ -41,7 +54,7 @@ class ApiInscriptionController extends BaseController
         $user->mdp = $hashedPassword;
         $user->save();
         
-        // Génération du JWT (comme login)
+        // Génération du JWT
         $secretKey = "ma_super_cle_secrete_pour_mon_application_muscu_2025";
 
         $payload = [
@@ -59,5 +72,33 @@ class ApiInscriptionController extends BaseController
         echo json_encode([
             'token' => $jwt
         ]);
+    }
+    
+    // -------------------------------------------------------------
+    // ⭐ NOUVELLE FONCTION : Vérifie les règles du mot de passe
+    // -------------------------------------------------------------
+    private function verifierMotDePasse($mdp)
+    {
+        // 8 caractères minimum
+        if (strlen($mdp) < 8) {
+            return "Le mot de passe doit contenir au moins 8 caractères";
+        }
+        
+        // Au moins 1 chiffre
+        if (!preg_match('/[0-9]/', $mdp)) {
+            return "Le mot de passe doit contenir au moins 1 chiffre";
+        }
+        
+        // Au moins 1 majuscule
+        if (!preg_match('/[A-Z]/', $mdp)) {
+            return "Le mot de passe doit contenir au moins 1 lettre majuscule";
+        }
+        
+        // Au moins 1 caractère spécial
+        if (!preg_match('/[^a-zA-Z0-9]/', $mdp)) {
+            return "Le mot de passe doit contenir au moins 1 caractère spécial (@, #, $, !, etc.)";
+        }
+        
+        return null;
     }
 }

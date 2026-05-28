@@ -66,3 +66,51 @@ Additionally, make sure that the following extensions are enabled in your PHP:
 - json (enabled by default - don't turn it off)
 - [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
 - [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+
+Documentation API Web Service
+
+1. Méthode register() du ApiInscriptionController
+
+Cette méthode permet de créer un nouveau compte utilisateur.
+
+URL : POST /api/inscription
+
+Paramètres :
+
+    nom (string, obligatoire)
+
+    prenom (string, obligatoire)
+
+    identifiant (string, obligatoire)
+
+    mdp (string, obligatoire)
+
+Traitement :
+
+    Vérifie que l'identifiant n'existe pas déjà
+
+    Hache le mot de passe avec BCRYPT
+
+    Crée le compte en base de données
+
+    Génère un token JWT
+
+Réponses :
+
+    Succès (200) : { "token" : "le_token_jwt" }
+
+    Erreur (400) : { "error" : "Identifiant déjà utilisé" }
+
+2. Authentification JWT - Pourquoi pas de méthode getToken() ?
+
+Mon API ne possède pas de méthode getToken() dédiée pour les raisons suivantes :
+
+    La méthode register() génère déjà un token JWT après l'inscription
+
+    La méthode login() génère déjà un token JWT après la connexion
+
+    Une méthode getToken() séparée créerait un appel API inutile
+
+    Le token est délivré au bon moment : juste après que l'utilisateur s'est identifié
+
+Conclusion : Je n'ai pas besoin de méthode getToken() car la génération du token JWT est déjà intégrée dans register() et login().
